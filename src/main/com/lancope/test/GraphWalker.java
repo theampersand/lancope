@@ -10,6 +10,11 @@
  */
 package com.lancope.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author andrew
  *
@@ -19,9 +24,62 @@ public class GraphWalker {
 	/**
 	 * @param args - none
 	 */
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		GraphWalker graphWalker = new GraphWalker();
+		
+		ArrayList<GNode> walkedGraph = graphWalker.walkGraph(GraphWalker.buildGraph());
+		
+		for(GNode graph : walkedGraph)
+		{
+			System.out.println(graph.getName());
+		}
 
+	}
+
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private ArrayList walkGraph(GNode node) {
+		
+		if (node.getChildren().length == 0) {			
+			ArrayList<GNode> list = new ArrayList<GNode>();
+			list.add(node);
+			return list;
+		} else {
+			ArrayList<GNode> list = new ArrayList<GNode>();
+			for(GNode child : node.getChildren())
+			{
+				list.addAll(walkGraph(child));
+			}
+			list.add(node);
+			return list;
+		}
+	}
+
+
+	/*
+	 *						node-3
+	 *			node-1  <
+	 * trunk <				node-4
+	 *			node -2
+	 *
+	 */
+	public static GNode buildGraph()
+	{
+		List<GNode> emptyChildren = Collections.emptyList();
+		GNode nodeTwo = new Graph("node-2", emptyChildren);			
+		GNode nodeThree = new Graph("node-3", emptyChildren);
+		GNode nodeFour = new Graph("node-4", emptyChildren);
+		
+		List<GNode> nodeOneChildren = new ArrayList<GNode>();
+		nodeOneChildren.add(nodeThree);
+		nodeOneChildren.add(nodeFour);
+		GNode nodeOne = new Graph("node-1", nodeOneChildren);
+		
+		List<GNode> trunkChildren = Arrays.asList(nodeOne, nodeTwo);
+		GNode trunk = new Graph("trunk", trunkChildren);
+		
+		return trunk;
 	}
 
 }
