@@ -10,9 +10,11 @@
  */
 package com.lancope.test;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,16 +32,34 @@ public class GraphWalker {
 		
 		ArrayList<GNode> walkedGraph = graphWalker.walkGraph(GraphWalker.buildGraph());
 		
+		System.out.println("Problem 1");
 		for(GNode graph : walkedGraph)
 		{
 			System.out.println(graph.getName());
 		}
+		
+		System.out.println("\nProblem 2");
+		ArrayList<ArrayList> paths = graphWalker.paths(GraphWalker.buildGraph());
+		
+		StringBuilder pathOutputString = new StringBuilder();
+		pathOutputString.append("Paths: ( ");
+		for (ArrayList path : paths) {
+			pathOutputString.append("(");
+			for (Object nodeName : path) {
+				pathOutputString.append(nodeName);
+				pathOutputString.append(" ");
+			}
+			pathOutputString.append(") ");
+		}
+		pathOutputString.append(" )");
+		
+		System.out.println(pathOutputString.toString());
 
 	}
 
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ArrayList walkGraph(GNode node) {
+	public ArrayList walkGraph(GNode node) {
 		
 		if (node.getChildren().length == 0) {			
 			ArrayList<GNode> list = new ArrayList<GNode>();
@@ -53,6 +73,32 @@ public class GraphWalker {
 			}
 			list.add(node);
 			return list;
+		}
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList paths(GNode node)
+	{
+		if (node.getChildren().length == 0)
+		{
+			ArrayList path = new ArrayList();
+			ArrayList thisNode = new ArrayList();
+			thisNode.add(node.getName());
+			path.add(thisNode);
+			return path;
+		}
+		else
+		{
+			ArrayList<ArrayList> childPathsUnderThisNode = new ArrayList();
+			for (GNode child : node.getChildren()) { 
+				ArrayList<ArrayList> childPaths = paths(child);
+				for(ArrayList childPath : childPaths)
+				{
+					childPath.add(0, node.getName());
+					childPathsUnderThisNode.add(childPath);
+				}
+			}
+			return childPathsUnderThisNode;
 		}
 	}
 
